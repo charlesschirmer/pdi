@@ -290,10 +290,23 @@ var deleteId=null;
 function pedirDelete(id){deleteId=id;document.getElementById('modalDelete').classList.add('open');}
 function fecharModal(){deleteId=null;document.getElementById('modalDelete').classList.remove('open');}
 async function confirmarDelete(){
-  if(!deleteId)return;fecharModal();setSyncStatus('busy');
-  try{db=await gistGet();var m=db.mentorandos.find(function(x){return x.id===deleteId;});if(m&&db.pdis)delete db.pdis[m.codigo];db.mentorandos=db.mentorandos.filter(function(x){return x.id!==deleteId;});await gistSet(db);setSyncStatus('ok');renderLista();showToast('Mentorando removido.','info','&#128465;');}
-  catch(e){setSyncStatus('err');showToast('Erro ao remover: '+e.message,'error','\u2715');}
-  deleteId=null;
+  if(!deleteId)return;
+  var idToDelete=deleteId; // captura antes de fecharModal() zerar deleteId
+  fecharModal();
+  setSyncStatus('busy');
+  try{
+    db=await gistGet();
+    var m=db.mentorandos.find(function(x){return x.id===idToDelete;});
+    if(m&&db.pdis)delete db.pdis[m.codigo];
+    db.mentorandos=db.mentorandos.filter(function(x){return x.id!==idToDelete;});
+    await gistSet(db);
+    setSyncStatus('ok');
+    renderLista();
+    showToast('Mentorando removido.','info','&#128465;');
+  }catch(e){
+    setSyncStatus('err');
+    showToast('Erro ao remover: '+e.message,'error','\u2715');
+  }
 }
 var toastTimer;
 function showToast(msg,tipo,icon){tipo=tipo||'success';icon=icon||'\u2713';var t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;document.getElementById('toastIcon').innerHTML=icon;t.className='toast '+tipo+' show';clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},3200);}
