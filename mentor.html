@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDI Mentoria — Painel do Mentor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #18181f;
+    --surface2: #22222c;
+    --border: #2e2e3a;
+    --accent: #c9a96e;
+    --accent2: #7c6a9e;
+    --text: #e8e6e0;
+    --text-muted: #888899;
+    --green: #4caf88;
+    --red: #e05555;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* Header */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-badge {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 18px; color: #fff;
+    flex-shrink: 0;
+  }
+
+  .header-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 600;
+    color: var(--text);
+  }
+
+  .header-text span {
+    font-size: 12px; color: var(--text-muted); font-weight: 400;
+  }
+
+  .header-tag {
+    margin-left: auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; color: var(--accent);
+    font-weight: 500; letter-spacing: 0.5px;
+  }
+
+  /* Layout */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .card-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px; font-weight: 600;
+  }
+
+  .card-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #1e1e2a, #2a2a38);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+
+  .card-body { padding: 24px; }
+
+  /* Form */
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="date"],
+  input[type="tel"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.12);
+  }
+
+  input::placeholder { color: #44444f; }
+
+  /* Código preview */
+  .code-preview {
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-align: center;
+    min-height: 48px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .code-hint {
+    font-size: 11px; color: var(--text-muted);
+    text-align: center; margin-top: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Botão */
+  .btn {
+    width: 100%;
+    padding: 13px;
+    border: none; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #b8924a);
+    color: #0f0f13;
+    margin-top: 6px;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(201, 169, 110, 0.25);
+  }
+
+  .btn-sm {
+    width: auto; padding: 7px 14px;
+    font-size: 12px; border-radius: 6px;
+  }
+
+  .btn-ghost {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+
+  .btn-danger {
+    background: rgba(224,85,85,0.15);
+    border: 1px solid rgba(224,85,85,0.3);
+    color: var(--red);
+  }
+
+  .btn-danger:hover { background: rgba(224,85,85,0.25); }
+
+  /* Lista de mentorandos */
+  .mentorando-list {
+    display: flex; flex-direction: column; gap: 12px;
+    max-height: 600px; overflow-y: auto;
+    padding: 4px 2px;
+  }
+
+  .mentorando-list::-webkit-scrollbar { width: 4px; }
+  .mentorando-list::-webkit-scrollbar-track { background: transparent; }
+  .mentorando-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .mentorando-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    transition: border-color 0.2s;
+  }
+
+  .mentorando-card:hover { border-color: var(--accent2); }
+
+  .mc-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .mc-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 600;
+    color: var(--text);
+  }
+
+  .mc-code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: rgba(201, 169, 110, 0.12);
+    color: var(--accent);
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .mc-info {
+    display: flex; flex-wrap: wrap; gap: 6px 16px;
+    font-size: 12px; color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .mc-info span { display: flex; align-items: center; gap: 4px; }
+
+  .mc-link {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .mc-actions {
+    display: flex; gap: 8px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px; right: 30px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 13px;
+    display: flex; align-items: center; gap: 10px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 999;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: var(--green); }
+  .toast.success .toast-icon { color: var(--green); }
+  .toast.info { border-color: var(--accent); }
+  .toast.info .toast-icon { color: var(--accent); }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state .es-icon {
+    font-size: 36px; margin-bottom: 12px; opacity: 0.4;
+  }
+
+  .empty-state p { font-size: 14px; line-height: 1.6; }
+
+  /* Count badge */
+  .count-badge {
+    background: var(--accent);
+    color: #0f0f13;
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+    margin-left: 8px;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center; justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 440px; width: 90%;
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; margin-bottom: 8px;
+  }
+
+  .modal p {
+    font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6;
+  }
+
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-actions .btn { flex: 1; }
+
+  @media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr; }
+    header { padding: 16px 20px; }
+    .container { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-badge">M</div>
+  <div class="header-text">
+    <h1>PDI Mentoria</h1>
+    <span>Painel do Mentor</span>
+  </div>
+  <div class="header-tag">✦ Mentor</div>
+</header>
+
+<div class="container">
+  <div class="grid">
+
+    <!-- Formulário de Cadastro -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">✏️</div>
+        <h2>Cadastrar Mentorando</h2>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>Nome completo</label>
+          <input type="text" id="nome" placeholder="Ex: Ana Clara Souza" oninput="atualizarCodigo()">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input type="tel" id="whats" placeholder="(51) 99999-9999">
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="email" placeholder="email@exemplo.com">
+        </div>
+        <div class="form-group">
+          <label>Data de Nascimento</label>
+          <input type="date" id="nascimento">
+        </div>
+        <div class="form-group">
+          <label>Código gerado</label>
+          <div class="code-preview" id="codePreview">—</div>
+          <p class="code-hint">Gerado automaticamente a partir das iniciais do nome</p>
+        </div>
+        <button class="btn btn-primary" onclick="cadastrar()">
+          <span>✦</span> Cadastrar Mentorando
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">👥</div>
+        <h2>Mentorandos <span class="count-badge" id="countBadge">0</span></h2>
+      </div>
+      <div class="card-body" style="padding:16px;">
+        <div class="mentorando-list" id="mentList">
+          <div class="empty-state">
+            <div class="es-icon">🌱</div>
+            <p>Nenhum mentorando cadastrado ainda.<br>Preencha o formulário ao lado para começar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal de confirmação de exclusão -->
+<div class="modal-overlay" id="modalDelete">
+  <div class="modal">
+    <h3>Remover mentorando?</h3>
+    <p>Esta ação não pode ser desfeita. O código e todos os dados do mentorando serão excluídos.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-danger" onclick="confirmarDelete()">Remover</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✓</span>
+  <span id="toastMsg">—</span>
+</div>
+
+<script>
+  // ==============================
+  // Config — ajuste a base URL para sua hospedagem
+  // ==============================
+  const BASE_URL = window.location.origin + window.location.pathname.replace('mentor.html', 'pdi.html');
+
+  // ==============================
+  // Storage
+  // ==============================
+  function getMentorandos() {
+    return JSON.parse(localStorage.getItem('pdi_mentorandos') || '[]');
+  }
+
+  function salvarMentorandos(lista) {
+    localStorage.setItem('pdi_mentorandos', JSON.stringify(lista));
+  }
+
+  // ==============================
+  // Geração de código
+  // ==============================
+  function gerarCodigo(nome) {
+    const palavras = nome.trim().split(/\s+/);
+    const iniciais = palavras.map(p => p[0]?.toUpperCase() || '').join('').slice(0, 3);
+    const nums = Math.floor(100000 + Math.random() * 900000).toString();
+    return iniciais + nums;
+  }
+
+  let codigoAtual = '';
+
+  function atualizarCodigo() {
+    const nome = document.getElementById('nome').value.trim();
+    const preview = document.getElementById('codePreview');
+    if (nome.length >= 2) {
+      codigoAtual = gerarCodigo(nome);
+      preview.textContent = codigoAtual;
+    } else {
+      codigoAtual = '';
+      preview.textContent = '—';
+    }
+  }
+
+  // ==============================
+  // Cadastrar
+  // ==============================
+  function cadastrar() {
+    const nome = document.getElementById('nome').value.trim();
+    const whats = document.getElementById('whats').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const nascimento = document.getElementById('nascimento').value;
+
+    if (!nome || !whats || !email || !nascimento) {
+      showToast('Preencha todos os campos.', 'info', '⚠');
+      return;
+    }
+
+    if (!codigoAtual) {
+      atualizarCodigo();
+    }
+
+    const lista = getMentorandos();
+    const novo = {
+      id: Date.now(),
+      nome, whats, email, nascimento,
+      codigo: codigoAtual,
+      criado: new Date().toISOString()
+    };
+    lista.push(novo);
+    salvarMentorandos(lista);
+    renderLista();
+    limparForm();
+    showToast('Mentorando cadastrado com sucesso!', 'success', '✓');
+  }
+
+  function limparForm() {
+    ['nome','whats','email','nascimento'].forEach(id => document.getElementById(id).value = '');
+    codigoAtual = '';
+    document.getElementById('codePreview').textContent = '—';
+  }
+
+  // ==============================
+  // Renderizar lista
+  // ==============================
+  function renderLista() {
+    const lista = getMentorandos();
+    const el = document.getElementById('mentList');
+    document.getElementById('countBadge').textContent = lista.length;
+
+    if (lista.length === 0) {
+      el.innerHTML = `<div class="empty-state">
+        <div class="es-icon">🌱</div>
+        <p>Nenhum mentorando cadastrado ainda.<br>Preencha o formulário ao lado para começar.</p>
+      </div>`;
+      return;
+    }
+
+    el.innerHTML = lista.map(m => {
+      const link = `${BASE_URL}?codigo=${m.codigo}`;
+      const nasc = m.nascimento ? new Date(m.nascimento + 'T00:00:00').toLocaleDateString('pt-BR') : '—';
+      return `
+        <div class="mentorando-card">
+          <div class="mc-header">
+            <div class="mc-name">${m.nome}</div>
+            <div class="mc-code">${m.codigo}</div>
+          </div>
+          <div class="mc-info">
+            <span>📱 ${m.whats}</span>
+            <span>✉ ${m.email}</span>
+            <span>🎂 ${nasc}</span>
+          </div>
+          <div class="mc-link">${link}</div>
+          <div class="mc-actions">
+            <button class="btn btn-ghost btn-sm" onclick="copiarLink('${link}')">📋 Copiar link</button>
+            <button class="btn btn-ghost btn-sm" onclick="abrirPDI('${link}')">↗ Abrir PDI</button>
+            <button class="btn btn-danger btn-sm" onclick="pedirDelete(${m.id})" style="margin-left:auto;">🗑</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function copiarLink(link) {
+    navigator.clipboard.writeText(link).then(() => showToast('Link copiado!', 'success', '📋'));
+  }
+
+  function abrirPDI(link) {
+    window.open(link, '_blank');
+  }
+
+  // ==============================
+  // Delete
+  // ==============================
+  let deleteId = null;
+
+  function pedirDelete(id) {
+    deleteId = id;
+    document.getElementById('modalDelete').classList.add('open');
+  }
+
+  function fecharModal() {
+    deleteId = null;
+    document.getElementById('modalDelete').classList.remove('open');
+  }
+
+  function confirmarDelete() {
+    if (!deleteId) return;
+    let lista = getMentorandos().filter(m => m.id !== deleteId);
+    salvarMentorandos(lista);
+    fecharModal();
+    renderLista();
+    showToast('Mentorando removido.', 'info', '🗑');
+  }
+
+  // ==============================
+  // Toast
+  // ==============================
+  let toastTimer;
+  function showToast(msg, tipo = 'success', icon = '✓') {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    document.getElementById('toastIcon').textContent = icon;
+    toast.className = `toast ${tipo} show`;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // ==============================
+  // Init
+  // ==============================
+  renderLista();
+</script>
+</body>
+</html>
