@@ -294,8 +294,7 @@ async function deletarItem(idx){
   renderLista();showToast('Acao removida.','ok');
 }
 
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/
-/g,'<br>');}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').split('\n').join('<br>');}
 
 var toastTimer;
 function showToast(msg,tipo){var icons={ok:'\u2713',err:'\u2715',warn:'\u26a0'};var t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;document.getElementById('toastIcon').textContent=icons[tipo]||'\u2713';t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},3000);}
