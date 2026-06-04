@@ -224,20 +224,36 @@ async function cadastrar(){
 }
 function limparForm(){['nome','whats','email','nascimento'].forEach(function(id){document.getElementById(id).value='';});codigoAtual='';document.getElementById('codePreview').textContent='\u2014';}
 function renderLista(){
-  var lista=db.mentorandos||[],el=document.getElementById('mentList');
+  var lista=db.mentorandos||[];
+  var el=document.getElementById('mentList');
   document.getElementById('countBadge').textContent=lista.length;
-  if(lista.length===0){el.innerHTML='<div class="empty-state"><div class="es-icon">&#127807;</div><p>Nenhum mentorando cadastrado ainda.<br>Preencha o formulario ao lado para comecar.</p></div>';return;}
-  el.innerHTML=lista.map(function(m){
-    var link=BASE_URL+'?codigo='+m.codigo,nasc=m.nascimento?new Date(m.nascimento+'T00:00:00').toLocaleDateString('pt-BR'):'--';
-    return '<div class="mentorando-card"><div class="mc-header"><div class="mc-name">'+m.nome+'</div><div class="mc-code">'+m.codigo+'</div></div>'
+  if(lista.length===0){
+    el.innerHTML='<div class="empty-state"><div class="es-icon">&#127807;</div><p>Nenhum mentorando cadastrado ainda.<br>Preencha o formulario ao lado para comecar.</p></div>';
+    return;
+  }
+  el.innerHTML='';
+  lista.forEach(function(m){
+    var link=BASE_URL+'?codigo='+m.codigo;
+    var nasc=m.nascimento?new Date(m.nascimento+'T00:00:00').toLocaleDateString('pt-BR'):'--';
+    var div=document.createElement('div');
+    div.className='mentorando-card';
+    div.innerHTML=
+       '<div class="mc-header"><div class="mc-name">'+m.nome+'</div><div class="mc-code">'+m.codigo+'</div></div>'
       +'<div class="mc-info"><span>&#128241; '+m.whats+'</span><span>&#9993; '+m.email+'</span><span>&#127874; '+nasc+'</span></div>'
       +'<div class="mc-link">'+link+'</div>'
-      +'<div class="mc-actions"><button class="btn btn-ghost btn-sm" onclick="copiarLink(''+link+'')">&#128203; Copiar link</button>'
-      +'<button class="btn btn-ghost btn-sm" onclick="window.open(''+link+'','_blank')">&#8599; Abrir PDI</button>'
-      +'<button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="pedirDelete('+m.id+')">&#128465;</button></div></div>';
-  }).join('');
+      +'<div class="mc-actions">'
+      +'<button class="btn btn-ghost btn-sm" data-copy="1">&#128203; Copiar link</button>'
+      +'<button class="btn btn-ghost btn-sm" data-open="1">&#8599; Abrir PDI</button>'
+      +'<button class="btn btn-danger btn-sm" style="margin-left:auto" data-del="1">&#128465;</button>'
+      +'</div>';
+    div.querySelector('[data-copy]').addEventListener('click',(function(l){return function(){copiarLink(l);};})(link));
+    div.querySelector('[data-open]').addEventListener('click',(function(l){return function(){window.open(l,'_blank');};})(link));
+    div.querySelector('[data-del]').addEventListener('click',(function(id){return function(){pedirDelete(id);};})(m.id));
+    el.appendChild(div);
+  });
 }
 function copiarLink(l){navigator.clipboard.writeText(l).then(function(){showToast('Link copiado!','success','&#128203;');});}
+function abrirPDI(l){window.open(l,'_blank');}
 var deleteId=null;
 function pedirDelete(id){deleteId=id;document.getElementById('modalDelete').classList.add('open');}
 function fecharModal(){deleteId=null;document.getElementById('modalDelete').classList.remove('open');}
